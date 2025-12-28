@@ -20,6 +20,9 @@
       "$properties": {
         "CharacterAutoLoads": false
       }
+    },
+    "ServerStorage": {
+      "$path": "src/Storage"
     }
   }
 }
