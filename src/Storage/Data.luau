@@ -43,7 +43,9 @@ end
 
 local store = DocumentService.DocumentStore.new({
 	dataStore = DataStoreService:GetDataStore(if RunService:IsStudio() then "Dev-0" else "Prod-0") :: any,
-	check = dataCheck,
+	check = function(value)
+		return dataCheck(value)
+	end,
 	default = {
 		coins = 0,
 		mazeGenerationAlgorithm = "Recursive Backtracker",
@@ -54,7 +56,7 @@ local store = DocumentService.DocumentStore.new({
 	lockSessions = true,
 })
 
-local Documents: DocumentService.Document<DataSchema> = {}
+local Documents: { [string]: DocumentService.Document<DataSchema> } = {}
 
 local function LoadData(player: Player)
 	local document = store:GetDocument(tostring(player.UserId))

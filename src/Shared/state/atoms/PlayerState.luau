@@ -33,9 +33,19 @@ local function SetPlayerState(player: string, newState: PlayerState)
 	end)
 end
 
+local function UpdatePlayerState(player: string, updater: (currentState: PlayerState) -> PlayerState)
+	PlayerStatesAtom(function(state)
+		state = table.clone(state)
+		state[player] = updater(state[player])
+
+		return state
+	end)
+end
+
 return {
 	PlayerStatesAtom = PlayerStatesAtom,
 	GetPlayerState = GetPlayerState,
 	SetPlayerState = SetPlayerState,
+	UpdatePlayerState = UpdatePlayerState,
 	DefaultPlayerState = DefaultPlayerState,
 }

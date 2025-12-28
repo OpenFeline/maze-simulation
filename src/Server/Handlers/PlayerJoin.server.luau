@@ -12,10 +12,14 @@ Players.PlayerAdded:Connect(function(player)
 
 	local data = DataHandlers.GetPlayerData(key)
 
-	PlayerState.SetPlayerState(key, {
-		coins = data.coins,
-		algorithms = data.algorithms,
-	})
+	PlayerState.UpdatePlayerState(key, function(currentState: PlayerState.PlayerState)
+		currentState = table.clone(currentState)
+		currentState.coins = data.coins
+		currentState.algorithms = {
+			maze = data.mazeGenerationAlgorithm,
+			solver = data.mazeSolverAlgorithm,
+		}
+	end)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
