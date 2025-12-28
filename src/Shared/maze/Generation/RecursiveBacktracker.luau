@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
+local BaseGenerator = require(script.Parent.BaseGenerator)
 local types = require(script.Parent.Parent.types)
 
 local size = MazeConfig.mazeSize
@@ -10,14 +11,13 @@ type NodeMeta = {
 	visited: boolean,
 }
 
-type RecursiveBacktracker = {
-	GetMaze: (self: _RecursiveBacktracker) -> { [number]: { [number]: types.Node<NodeMeta> } },
-	Generate: (self: _RecursiveBacktracker) -> (),
-	Completed: boolean,
+type RecursiveBacktracker = BaseGenerator.BaseGenerator<NodeMeta> & {
+	Build: (self: _RecursiveBacktracker) -> (),
 }
 
 type _RecursiveBacktracker = RecursiveBacktracker & {
 	_Maze: { [number]: { [number]: types.Node<NodeMeta> } },
+	Completed: boolean,
 	GetNeighbors: (self: _RecursiveBacktracker, x: number, y: number) -> { types.Node<NodeMeta> },
 	SetDirection: (self: _RecursiveBacktracker, node1: types.Node<NodeMeta>, node2: types.Node<NodeMeta>) -> (),
 }
@@ -125,6 +125,16 @@ function RecursiveBacktracker.Generate(self: _RecursiveBacktracker)
 	end
 
 	self.Completed = true
+end
+
+function RecursiveBacktracker.BuildMaze(self: _RecursiveBacktracker)
+	if not self.Completed then
+		warn("Maze is not completed.")
+	end
+end
+
+function RecursiveBacktracker.IsComplete(self: _RecursiveBacktracker)
+	return self.Completed
 end
 
 return RecursiveBacktracker

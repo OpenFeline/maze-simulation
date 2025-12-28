@@ -10,11 +10,11 @@ return function()
 
 			print("Generating maze...")
 
-			while not Maze.Completed do
+			while not Maze:IsComplete() do
 				task.wait()
 			end
 
-			expect(Maze.Completed).to.be.ok()]]
+			expect(Maze:IsComplete()).to.be.ok()]]
 			-- Find a better way to write this
 			expect(true == true).to.be.ok() -- placeholder for now
 		end)
