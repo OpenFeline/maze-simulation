@@ -22,16 +22,26 @@ local UI = script.Parent.ui
 local DebugView = require(UI.view.Debug)
 local HUDView = require(UI.view.HUD)
 
+-- States:
+local PlayerState = require(UI.state.PlayerState)
+
 -- TODO: Move declaration. Handled by Charm?
 -- This value should default to `false` and be toggled via some input-sequence or special key.
 local DEBUG_MODE = scope:Value(true) --> Temporarily set to `true` until there is a method to toggle.
 
-scope:Hydrate(PlayerGui) {
+scope:New "ScreenGui" {
+	Name = "Interface [App]",
+	Parent = PlayerGui,
+
 	[fusion.Children] = {
 		-- Mount debug menu as necessary:
 		scope:Computed(function (use)
-			return if use(DEBUG_MODE) then DebugView(scope, {}) else nil
+			return if use(DEBUG_MODE) then DebugView(scope, {
+				States = PlayerState.currentState
+			}) else nil
 		end),
-		HUDView(scope, {})
+		
+		-- TODO: Uncomment HUDView when there is an implementation in place.
+		--HUDView(scope, {})
 	}
 }
