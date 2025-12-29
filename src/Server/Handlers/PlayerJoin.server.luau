@@ -19,6 +19,8 @@ Players.PlayerAdded:Connect(function(player)
 			maze = data.mazeGenerationAlgorithm,
 			solver = data.mazeSolverAlgorithm,
 		}
+
+		return currentState -- forgot to return this so it caused me to debug why playerstate wasn't being set for an hour looooooooooool
 	end)
 end)
 

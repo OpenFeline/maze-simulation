@@ -8,7 +8,7 @@ export type PlayerState = {
 		maze: string,
 		solver: string,
 	},
-	ingame: boolean,
+	gameState: "LOBBY" | "INGAME" | "GENERATING" | "ENDED",
 }
 
 local PlayerStatesAtom = charm.atom({}) :: charm.Atom<{ [string]: PlayerState }>
@@ -18,7 +18,7 @@ local DefaultPlayerState: PlayerState = {
 		maze = "Recursive Backtracker",
 		solver = "Wall Follower",
 	},
-	ingame = false,
+	gameState = "LOBBY",
 }
 
 local function GetPlayerState(player: string)
