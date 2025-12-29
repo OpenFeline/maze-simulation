@@ -8,7 +8,7 @@ export type PlayerState = {
 		maze: string,
 		solver: string,
 	},
-	ingame: boolean,
+	gameState: "LOBBY" | "INGAME" | "GENERATING" | "ENDED",
 }
 
 local PlayerStatesAtom = charm.atom({}) :: charm.Atom<{ [string]: PlayerState }>
@@ -18,7 +18,7 @@ local DefaultPlayerState: PlayerState = {
 		maze = "Recursive Backtracker",
 		solver = "Wall Follower",
 	},
-	ingame = false,
+	gameState = "LOBBY",
 }
 
 local function GetPlayerState(player: string)
@@ -33,9 +33,19 @@ local function SetPlayerState(player: string, newState: PlayerState)
 	end)
 end
 
+local function UpdatePlayerState(player: string, updater: (currentState: PlayerState) -> PlayerState)
+	PlayerStatesAtom(function(state)
+		state = table.clone(state)
+		state[player] = updater(state[player])
+
+		return state
+	end)
+end
+
 return {
 	PlayerStatesAtom = PlayerStatesAtom,
 	GetPlayerState = GetPlayerState,
 	SetPlayerState = SetPlayerState,
+	UpdatePlayerState = UpdatePlayerState,
 	DefaultPlayerState = DefaultPlayerState,
 }

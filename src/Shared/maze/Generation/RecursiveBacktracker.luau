@@ -6,7 +6,7 @@ local types = require(script.Parent.Parent.types)
 
 local size = MazeConfig.mazeSize
 
-type NodeMeta = {
+export type NodeMeta = {
 	direction: string,
 	visited: boolean,
 }
