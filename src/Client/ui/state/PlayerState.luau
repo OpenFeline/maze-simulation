@@ -5,16 +5,13 @@ local charm = require(ReplicatedStorage.Packages.charm)
 
 local PlayerStateHandlers = require(ReplicatedStorage.state.atoms.PlayerState)
 
-local scope = fusion.scoped(fusion)
+local scope = fusion:scoped()
 local PlayerState = {}
 
-PlayerState.currentState = fusion.Contextual(PlayerStateHandlers.DefaultPlayerState)
+PlayerState.currentState = scope:Value(PlayerStateHandlers.DefaultPlayerState)
 
-charm.subscribe(PlayerStateHandlers.PlayerStatesAtom, function(newState, oldState)
-	local override = scope:Value(oldState)
-	PlayerState.currentState:is(override):during(function()
-		override:set(newState)
-	end)
+charm.subscribe(PlayerStateHandlers.PlayerStatesAtom, function(newState)
+	PlayerState.currentState:set(newState)
 end)
 
 return PlayerState
