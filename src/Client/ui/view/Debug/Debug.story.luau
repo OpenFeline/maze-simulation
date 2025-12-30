@@ -3,8 +3,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local fusion = require(ReplicatedStorage.Packages.fusion)
 local labs = require(ReplicatedStorage.Packages:FindFirstChild("ui-labs"))
 
-local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
-
 local DebugView = require(script.Parent)
 
 local FAKE_DEBUG_STATES do
