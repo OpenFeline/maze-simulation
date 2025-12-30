@@ -9,10 +9,7 @@
       }
     },
     "ServerScriptService": {
-      "$path": "src/Server",
-      "Tests": {
-        "$path": "tests"
-      }
+      "$path": "src/Server"
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {
@@ -25,7 +22,10 @@
       }
     },
     "ServerStorage": {
-      "$path": "src/Storage"
+      "$path": "src/Storage",
+      "ServerPackages": {
+        "$path": "ServerPackages"
+      }
     }
   }
 }
