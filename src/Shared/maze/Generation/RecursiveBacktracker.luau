@@ -1,8 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
-local BuildNode = require(ReplicatedStorage.maze.util.BuildNode)
 local BaseGenerator = require(script.Parent.BaseGenerator)
+local BuildNode = require(ReplicatedStorage.maze.util.BuildNode)
+local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
 local types = require(script.Parent.Parent.types)
 
 local size = MazeConfig.mazeSize
