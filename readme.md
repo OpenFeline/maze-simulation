@@ -38,9 +38,11 @@ src/
 ## Getting Started
 
 1. Clone the repository
-2. Open in Roblox Studio
-3. Configure maze settings in `Shared/core/MazeConfig/`
-4. Use Cmdr commands to generate and solve mazes
+2. Run ``rokit install`` to install necessary tools
+3. Run ``pesde install`` to install necessary dependencies
+4. Run ``rojo build`` to build a place file & generate a sourcemap
+5. Open in Roblox Studio
+6. Start rojo & connect in Roblox Studio then start writing code!
 
 ## Contributing
 
