@@ -1,4 +1,6 @@
 syntax = "Luau"
 
+call_parentheses = "Input" # For Fusion syntax-sugar :3
+
 [sort_requires]
 enabled = true

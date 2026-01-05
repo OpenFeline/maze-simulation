@@ -23,7 +23,7 @@ type Props = {
 
 return function(scope: Scope, props: Props): Instance
 	scope = scope:innerScope() :: Scope
-	return scope:New("Frame")({
+	return scope:New "Frame" {
 		Parent = props.Parent,
 
 		AnchorPoint = Vector2.one / 2,
@@ -33,7 +33,7 @@ return function(scope: Scope, props: Props): Instance
 		BackgroundTransparency = 1,
 
 		[Children] = {
-			scope:New("TextButton")({
+			scope:New "TextButton" {
 				AnchorPoint = Vector2.one / 2,
 				Position = UDim2.fromScale(0.5, 0.5),
 				Size = UDim2.fromScale(0.1, 0.1),
@@ -43,7 +43,7 @@ return function(scope: Scope, props: Props): Instance
 				[OnEvent("Activated")] = function()
 					Remotes.startGame:fire()
 				end,
-			}),
+			},
 		},
-	})
+	}
 end

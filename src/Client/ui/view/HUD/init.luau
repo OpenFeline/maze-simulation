@@ -10,7 +10,7 @@ local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
-type Scope<T> = Fusion.Scope<T>
+type Scope<T = Fusion> = Fusion.Scope<T>
 type UsedAs<T> = Fusion.UsedAs<T>
 
 type Props = {
@@ -18,9 +18,9 @@ type Props = {
 }
 
 return function(scope: Scope<Fusion>, props: Props)
-	scope = scope:innerScope()
-	return scope:New("ScreenGui")({
+	scope = scope:innerScope() :: Scope
+	return scope:New "ScreenGui" {
 		Name = "HUD [View]",
 		Parent = props.Parent,
-	})
+	}
 end
