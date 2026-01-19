@@ -3,7 +3,7 @@ local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local BaseSolver = require(script.Parent.BaseSolver)
 local GetPoints = require(ReplicatedStorage.maze.util.GetPoints)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
-local signal = require(ReplicatedStorage.Packages.signal)
+local signal = require(ReplicatedStorage.Packages.Signal)
 local types = require(ReplicatedStorage.maze.types)
 
 type WallFollower = BaseSolver.BaseSolver & {}

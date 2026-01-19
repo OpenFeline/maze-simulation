@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
-local signal = require(ReplicatedStorage.Packages.signal)
+local signal = require(ReplicatedStorage.Packages.Signal)
 local types = require(ReplicatedStorage.maze.types)
 
 export type BaseSolver = {
