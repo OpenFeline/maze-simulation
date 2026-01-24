@@ -9,6 +9,7 @@ local ZERO_UDIM2 = UDim2.new()
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
+local peek = Fusion.peek
 
 -- Fusion | Types:
 type Fusion = typeof(Fusion)
@@ -41,11 +42,11 @@ return function(scope: Scope, props: Props)
 		else
 			offset = scope:Value(ZERO_UDIM2) :: Value<UDim2>
 			scope:Observer(shadow.Offset):onBind(function()
-				local value = Fusion.peek(shadow.Offset) :: UDim2
+				local value = peek(shadow.Offset :: any) :: UDim2
 				offset:set(value)
 			end)
 		end
-		shadow.Offset = scope:Spring(offset, 50) :: UsedAs<UDim2>
+		shadow.Offset = scope:Spring(offset :: any, 50) :: UsedAs<UDim2>
 	else
 		offset = scope:Value(ZERO_UDIM2) :: Value<UDim2>
 	end
@@ -62,7 +63,7 @@ return function(scope: Scope, props: Props)
 		local began = object.InputBegan:Connect(function(input)
 			if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 			if not shadow or preserved.Offset then return end
-			preserved.Offset = Fusion.peek(offset) :: UDim2
+			preserved.Offset = peek(offset :: any) :: UDim2
 			offset:set(ZERO_UDIM2)
 		end)
 		local ended = object.InputEnded:Connect(function(input)
