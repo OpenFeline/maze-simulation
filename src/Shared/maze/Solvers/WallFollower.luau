@@ -3,7 +3,7 @@ local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local BaseSolver = require(script.Parent.BaseSolver)
 local GetPoints = require(ReplicatedStorage.maze.util.GetPoints)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
-local Signal = require(ReplicatedStorage.Packages.Signal)
+local signal = require(ReplicatedStorage.Packages.Signal)
 local types = require(ReplicatedStorage.maze.types)
 
 type WallFollower = BaseSolver.BaseSolver & {}
@@ -59,7 +59,7 @@ function WallFollowerClass.new(maze: BaseGenerator.BaseGenerator<unknown>)
 	self._end = endPoint
 	self._path = {}
 	self._complete = false
-	self.OnComplete = Signal.new()
+	self.OnComplete = signal.new()
 
 	return self
 end
@@ -89,7 +89,7 @@ function WallFollower.Solve(self: _WallFollower)
 	end
 
 	self._complete = true
-	self.OnComplete:fire(self._path)
+	self.OnComplete:fire()
 
 	return self._path
 end

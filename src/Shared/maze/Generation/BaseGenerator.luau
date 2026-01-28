@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Signal = require(ReplicatedStorage.Packages.Signal)
+local signal = require(ReplicatedStorage.Packages.Signal)
 local types = require(ReplicatedStorage.maze.types)
 
 export type BaseGenerator<NodeMeta> = {
@@ -7,7 +7,7 @@ export type BaseGenerator<NodeMeta> = {
 	GetMaze: (self: BaseGenerator<NodeMeta>) -> { [number]: { [number]: types.Node<NodeMeta> } },
 	Generate: (self: BaseGenerator<NodeMeta>) -> number, -- returns a seed to be able to remake the maze for possible debugging & replay system?
 	IsComplete: (self: BaseGenerator<NodeMeta>) -> boolean,
-	OnComplete: Signal.Signal<>,
+	OnComplete: signal.Signal<>,
 	Destroy: (self: BaseGenerator<NodeMeta>) -> (),
 }
 

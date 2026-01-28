@@ -18,7 +18,7 @@ PlayerState.current = scope:Value(PlayerStateHandlers.DefaultPlayerState) :: Val
 
 Charm.subscribe(function()
 	return PlayerStateHandlers.PlayerStatesAtom()[Player.Name]
-end, function(newState)
+end, function(newState: PlayerState)
 	PlayerState.current:set(newState)
 end)
 

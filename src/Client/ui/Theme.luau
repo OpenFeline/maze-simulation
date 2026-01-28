@@ -3,10 +3,6 @@
 -- Services:
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- States:
-local PlayerState = require(script.Parent.state.PlayerState)
-type PlayerState = PlayerState.PlayerState
-
 -- Fusion:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local scope = Fusion:scoped()
@@ -19,26 +15,27 @@ local DEFAULT_THEME_NAME: ThemeName = "Dark"
 
 local Theme = {}
 
-Theme.List = {
+Theme.List = table.freeze {
 	Dark = require(ThemeContainer.Dark),
 	Light = require(ThemeContainer.Light),
 }
-table.freeze(Theme.List) --> Ensure immutability!
 export type ThemeName = keyof<typeof(Theme.List)>
 
-Theme.Name = scope:Computed(function(use)
-	local state: PlayerState = use(PlayerState.current)
-	return state.uiTheme or DEFAULT_THEME_NAME
-end)
+--[[
+	TODO: Update this value alongside PlayerState...
+	We can't pull in PlayerState here because stories depend on
+	this ModuleScript. Game state can't be loaded prior to runtime!
+]]
+Theme.Name = scope:Value(DEFAULT_THEME_NAME)
 
-Theme.Dynamic = {} :: types.DynamicTheme
--- FIX: Cast to a more generalized table to fix "Cannot iterate over table without indexer" type error
+local dynamic = {} :: types.DynamicTheme
 for property in types :: { [string]: Color3 } do
-	-- FIX: Cast to any to fix "Cannot add indexer" type error
-	(Theme.Dynamic :: any)[property] = scope:Computed(function(use)
+	(dynamic :: any)[property] = scope:Computed(function(use: any)
 		local name = use(Theme.Name)
-		return Theme.List[name][property]
+		return (Theme.List :: any)[name][property]
 	end)
 end
+
+Theme.Contextual = Fusion.Contextual(dynamic)
 
 return Theme

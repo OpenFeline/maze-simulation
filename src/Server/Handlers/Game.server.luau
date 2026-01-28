@@ -9,7 +9,7 @@ local networking = require(ReplicatedStorage.networking)
 local types = require(ReplicatedStorage.maze.types)
 
 local PlayerMazes: { [Player]: BaseGenerator.BaseGenerator<unknown> } = {}
-local PlayerPaths: { [Player]: { types.Node<unknown> } } = {}
+local PlayerPaths: { [Player]: { path: types.Node<unknown>, current: number } } = {}
 
 local function UpdatePlayerGameState(player: Player, newState: "LOBBY" | "GENERATING" | "INGAME" | "ENDED" | "SOLVING")
 	PlayerStateHandlers.UpdatePlayerState(player.Name, function(state)
@@ -33,8 +33,6 @@ local function GenerateMaze(player: Player)
 
 		generator.OnComplete:once(function()
 			PlayerMazes[player] = generator
-
-			networking.buildMaze:fire(player, PlayerMazes[player]:GetMaze() :: types.Node<unknown>)
 		end)
 
 		generator:Generate()
@@ -49,19 +47,16 @@ local function SolveMaze(player: Player)
 		ReplicatedStorage.maze.Solvers:FindFirstChild(MazeConfig.solvingAlgorithms[solverAlgorithmKey].key)
 
 	if mazeSolver and playerMaze then
-		UpdatePlayerGameState(player, "SOLVING")
-
 		local solverModule = require(mazeSolver) :: BaseSolver.BaseSolver
 		local solver = solverModule.new(playerMaze)
+		local path = solver:Solve()
 
-		solver.OnComplete:once(function(path)
-			UpdatePlayerGameState(player, "INGAME")
-			PlayerPaths[player] = path
-
-			networking.startPath:fire(player, Path.PathToPositions(PlayerPaths[player]))
+		solver.OnComplete:once(function() -- does this even need to be a signal?
+			PlayerPaths[player] = {
+				path = path,
+				current = 1,
+			}
 		end)
-
-		solver:Solve()
 	end
 end
 
@@ -72,6 +67,15 @@ networking.startGame:connect(function(player)
 		task.spawn(function()
 			GenerateMaze(player)
 			SolveMaze(player)
+			UpdatePlayerGameState(player, "INGAME")
+			networking.buildMaze:fire(player, PlayerMazes[player]:GetMaze() :: any)
 		end)
 	end
+end)
+
+networking.requestNextPathNode:onRequest(function(player)
+	local currentNode = PlayerPaths[player].path[PlayerPaths[player].current]
+	PlayerPaths[player].current += 1
+
+	return currentNode
 end)

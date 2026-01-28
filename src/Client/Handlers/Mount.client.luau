@@ -34,7 +34,7 @@ local scope = Fusion:scoped({
 -- This value should default to `false` and be toggled via some input-sequence or special key.
 local DEBUG_MODE: UsedAs<boolean> = scope:Value(true :: boolean) --> Temporarily set to `true` until there is a method to toggle.
 
-scope:New("ScreenGui")({
+scope:New "ScreenGui" {
 	Name = "Interface [App]",
 	Parent = PlayerGui,
 
@@ -55,4 +55,4 @@ scope:New("ScreenGui")({
 		end),
 		-- TODO: Define some computed for the HUD!
 	},
-})
+}
