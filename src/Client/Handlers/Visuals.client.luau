@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local BuildMaze = require(ReplicatedStorage.maze.util.BuildMaze)
+local CustomNPC = require(ReplicatedStorage.libs.CustomNPC)
 local networking = require(ReplicatedStorage.networking)
 
 --[[
@@ -18,4 +19,8 @@ end
 networking.buildMaze:connect(function(maze)
 	BuildMaze(maze)
 	StartNPCWalk()
+end)
+
+networking.startPath:connect(function(path)
+	StartNPCWalk(path)
 end)
