@@ -3,6 +3,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
+local Sift = require(ReplicatedStorage.Packages.Sift)
+local Dictionary = Sift.Dictionary
+
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
 
@@ -14,15 +17,15 @@ local Component = require(script.Parent)
 local Types = script.Parent.Parent.Parent.Parent.types
 local Shadow = require(Types.Shadow)
 
-local STORY_CONTROLS = Shadow.Story.Controls {
+local STORY_CONTROLS = {
 	Color = Color3.new(1, 1, 1),
 	Corners = UILabs.Slider(0.05, 0, 1),
 }
-type Controls = typeof(STORY_CONTROLS)
+type Controls = typeof(STORY_CONTROLS) & Shadow.Controls
 
 return UILabs.CreateFusionStory({
 	fusion = Fusion,
-	controls = STORY_CONTROLS,
+	controls = Dictionary.join(Shadow.Story.Controls, STORY_CONTROLS) :: any,
 }, function(props)
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
