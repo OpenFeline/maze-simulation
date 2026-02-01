@@ -9,6 +9,8 @@
 -- Services:
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
 -- Fusion:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
@@ -32,7 +34,19 @@ local scope = Fusion:scoped({
 
 -- TODO: Move declaration. Handled by Charm?
 -- This value should default to `false` and be toggled via some input-sequence or special key.
-local DEBUG_MODE: UsedAs<boolean> = scope:Value(true :: boolean) --> Temporarily set to `true` until there is a method to toggle.
+local DEBUG_MODE: UsedAs<boolean> = scope:Value(false :: boolean) --> Temporarily set to `true` until there is a method to toggle.
+
+if RunService:IsStudio() then -- extra fail-safe in case ^ goes into public for some reason - butterfriez
+	DEBUG_MODE:set(true)
+end
+
+-- UserInputService this fucker lmaoooo - butterfriez
+UserInputService.InputBegan:Connect(function(i, p)
+	if p then return end
+
+	-- Why dis throw a type error... ;-;
+	if i.KeyCode == Enum.KeyCode.F then DEBUG_MODE:set(not Fusion.peek(DEBUG_MODE) :: boolean) end
+end)
 
 scope:New "ScreenGui" {
 	Name = "Interface [App]",
