@@ -3,9 +3,10 @@
 local types = require(script.Parent.types)
 
 local theme: types.Theme = {
-	background = Color3.fromHex("#fafafa"),
-	foreground = Color3.fromHex("#e4e5f1"),
-	accent = Color3.fromHex("#9394a5"),
-	text = Color3.fromHex("#484b6a"),
+	Primary = Color3.fromHex("#363635"),
+	Secondary = Color3.fromHex("#595A4A"),
+	Accent = Color3.fromHex("#fa3cb1"),
+	Shadow = Color3.fromHex("#252525"),
+	Text = Color3.fromHex("#dbdbdb"),
 }
 return theme

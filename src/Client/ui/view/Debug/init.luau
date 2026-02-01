@@ -7,11 +7,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local Children, Child = Fusion.Children, Fusion.Child
+local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 type UsedAs<T> = Fusion.UsedAs<T>
+type StateObject<T> = Fusion.UsedAs<T>
 
 type UnknownTable = { [unknown]: unknown }
 type StackTrace = { depth: number, [unknown]: boolean }
@@ -29,7 +30,7 @@ local STACK_DEPTH_LIMIT: number = 10
 local ESCAPE_IDENTIFIER: string = "<$ESCAPE$>"
 
 local function Header(scope: Scope, content: string): Instance
-	return scope:New("TextLabel")({
+	return scope:New "TextLabel" {
 		LayoutOrder = 1,
 
 		Size = UDim2.fromScale(0.1, 0),
@@ -41,7 +42,7 @@ local function Header(scope: Scope, content: string): Instance
 		Text = content,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		FontFace = Font.fromEnum(Enum.Font.BuilderSansBold),
-	})
+	}
 end
 
 local function Primitive(scope: Scope, value: unknown): Instance
@@ -62,7 +63,7 @@ local function Primitive(scope: Scope, value: unknown): Instance
 		text = tostring(value)
 	end
 
-	return scope:New("TextLabel")({
+	return scope:New "TextLabel" {
 		LayoutOrder = 2,
 
 		Size = UDim2.fromScale(0, 0),
@@ -73,11 +74,11 @@ local function Primitive(scope: Scope, value: unknown): Instance
 		Text = text,
 		TextColor3 = color,
 		TextXAlignment = Enum.TextXAlignment.Left,
-	})
+	}
 end
 
 local function Collection(scope: Scope, children: { Instance }): Instance
-	return scope:New("Frame")({
+	return scope:New "Frame" {
 		LayoutOrder = 2,
 
 		Size = UDim2.new(1, 0, 0, 10),
@@ -85,13 +86,13 @@ local function Collection(scope: Scope, children: { Instance }): Instance
 
 		BackgroundTransparency = 1,
 
-		[Children] = Child({
-			scope:New("UIListLayout")({
+		[Children] = {
+			scope:New "UIListLayout" {
 				Padding = UDim.new(0, 5),
-			}),
+			},
 			children,
-		}),
-	})
+		},
+	}
 end
 
 local function Builder(scope: Scope, name: string, data: unknown, trace: StackTrace?): Instance
@@ -124,38 +125,38 @@ local function Builder(scope: Scope, name: string, data: unknown, trace: StackTr
 		body = Primitive(scope, data)
 	end
 
-	return scope:New("Frame")({
+	return scope:New "Frame" {
 		Size = UDim2.new(1, 0, 0, 10),
 		AutomaticSize = Enum.AutomaticSize.XY,
 
 		BackgroundTransparency = 1,
 
 		[Children] = {
-			scope:New("UIListLayout")({
+			scope:New "UIListLayout" {
 				FillDirection = Enum.FillDirection.Horizontal,
 				Padding = UDim.new(0, 5),
 				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
+			},
 			header,
 			body,
 		},
-	})
+	}
 end
 
 type Props = {
 	Parent: UsedAs<Instance?>?,
-	States: UsedAs<{ [string]: unknown }>,
+	State: UsedAs<{ [string]: unknown }>,
 }
 
-return function(scope: Scope, props: Props)
-	scope = scope:innerScope()
+return function(scope: Scope, props: Props): Instance
+	scope = scope:innerScope() :: Scope
 
-	local stateRows = scope:ForPairs(props.States, function(_, scope: Scope, key: string, value: unknown)
-		scope = scope:innerScope()
+	local stateRows = scope:ForPairs(props.State, function(_, scope: Scope, key: string, value: unknown)
+		scope = scope:innerScope() :: Scope
 		return key, Builder(scope, key, value)
 	end)
 
-	return scope:New("Frame")({
+	return scope:New "Frame" {
 		Name = "Debug [View]",
 		Parent = props.Parent,
 
@@ -165,11 +166,11 @@ return function(scope: Scope, props: Props)
 		BackgroundTransparency = 1,
 
 		[Children] = {
-			scope:New("UIListLayout")({
+			scope:New "UIListLayout" {
 				Padding = UDim.new(0, 5),
 				SortOrder = Enum.SortOrder.LayoutOrder,
-			}),
-			scope:New("TextLabel")({
+			},
+			scope:New "TextLabel" {
 				LayoutOrder = 1,
 
 				Size = UDim2.new(0.25, 0, 0, 20),
@@ -181,8 +182,8 @@ return function(scope: Scope, props: Props)
 				Text = "[ DEBUG ]",
 				TextXAlignment = Enum.TextXAlignment.Left,
 				FontFace = Font.fromEnum(Enum.Font.BuilderSansBold),
-			}),
-			scope:New("Frame")({
+			},
+			scope:New "Frame" {
 				LayoutOrder = 2,
 
 				Position = UDim2.fromOffset(5, 5),
@@ -190,13 +191,13 @@ return function(scope: Scope, props: Props)
 
 				BackgroundTransparency = 1,
 
-				[Children] = Child({
+				[Children] = {
 					stateRows,
-					scope:New("UIListLayout")({
+					scope:New "UIListLayout" {
 						Padding = UDim.new(0, 5),
-					}),
-				}),
-			}),
+					},
+				},
+			},
 		},
-	})
+	}
 end

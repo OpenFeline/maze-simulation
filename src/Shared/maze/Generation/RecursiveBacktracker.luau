@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BaseGenerator = require(script.Parent.BaseGenerator)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
-local signal = require(ReplicatedStorage.Packages.signal)
+local signal = require(ReplicatedStorage.Packages.Signal)
 local types = require(script.Parent.Parent.types)
 
 local size = MazeConfig.mazeSize

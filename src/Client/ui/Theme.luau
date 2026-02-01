@@ -1,35 +1,41 @@
+--!strict
+
+-- Services:
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Fusion:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
+local scope = Fusion:scoped()
 
-local PlayerStateValue = script.Parent.state.PlayerState
 local ThemeContainer = script.Parent.themes
-
-local playerState = require(PlayerStateValue)
 local types = require(ThemeContainer.types)
-
 export type Theme = types.Theme
+
+local DEFAULT_THEME_NAME: ThemeName = "Dark"
 
 local Theme = {}
 
-local scope = Fusion:scoped()
-
-Theme.List = {
+Theme.List = table.freeze {
 	Dark = require(ThemeContainer.Dark),
 	Light = require(ThemeContainer.Light),
 }
-table.freeze(Theme.List) --> Ensure immutability!
+export type ThemeName = keyof<typeof(Theme.List)>
 
-Theme.Name = scope:Computed(function(use)
-	return use(playerState).currentState.Theme -- Unsure if this is correct way of doing this
-end)
+--[[
+	TODO: Update this value alongside PlayerState...
+	We can't pull in PlayerState here because stories depend on
+	this ModuleScript. Game state can't be loaded prior to runtime!
+]]
+Theme.Name = scope:Value(DEFAULT_THEME_NAME)
 
-Theme.Dynamic = {} :: types.DynamicTheme
-
-for property in types do
-	Theme.Dynamic[property] = scope:Computed(function(use)
+local dynamic = {} :: types.DynamicTheme
+for property in types :: { [string]: Color3 } do
+	(dynamic :: any)[property] = scope:Computed(function(use: any)
 		local name = use(Theme.Name)
-		return Theme.List[name][property]
+		return (Theme.List :: any)[name][property]
 	end)
 end
+
+Theme.Contextual = Fusion.Contextual(dynamic)
 
 return Theme
