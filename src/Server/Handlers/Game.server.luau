@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local BaseSolver = require(ReplicatedStorage.maze.Solvers.BaseSolver)
 local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
+local Path = require(ReplicatedStorage.maze.util.Path)
 local PlayerStateHandlers = require(ReplicatedStorage.state.atoms.PlayerState)
 local networking = require(ReplicatedStorage.networking)
 local types = require(ReplicatedStorage.maze.types)
@@ -10,7 +11,7 @@ local types = require(ReplicatedStorage.maze.types)
 local PlayerMazes: { [Player]: BaseGenerator.BaseGenerator<unknown> } = {}
 local PlayerPaths: { [Player]: { path: types.Node<unknown>, current: number } } = {}
 
-local function UpdatePlayerGameState(player: Player, newState: "LOBBY" | "GENERATING" | "INGAME" | "ENDED")
+local function UpdatePlayerGameState(player: Player, newState: "LOBBY" | "GENERATING" | "INGAME" | "ENDED" | "SOLVING")
 	PlayerStateHandlers.UpdatePlayerState(player.Name, function(state)
 		state = table.clone(state)
 		state.gameState = newState
