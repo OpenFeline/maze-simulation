@@ -9,6 +9,7 @@ local Hooks = script.Parent.Parent.hooks
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
+local networking = require(ReplicatedStorage.networking)
 local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
@@ -138,6 +139,66 @@ return function(scope: Scope, props: Props): Instance
 								PaddingBottom = UDim.new(0.1),
 							} :: any,
 						},
+					},
+
+					Button(scope, {
+						AnchorPoint = Vector2.new(0.5, 1),
+						Position = UDim2.fromScale(0.055, -0.1),
+						Size = UDim2.new(0, 130, 0.5, 0),
+						Shadow = {
+							Offset = UDim2.fromScale(0, -0.05),
+							Color = theme.Shadow,
+							Ratio = 1,
+						},
+
+						Corners = UDim.new(0.15),
+						Color = theme.Primary,
+
+						Activated = function()
+							networking.requestChangeState:fire("LOBBY")
+						end,
+
+						[Children] = {
+							scope:New "UIStroke" {
+								ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+								StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
+								BorderStrokePosition = Enum.BorderStrokePosition.Inner,
+
+								Color = theme.Shadow,
+								Thickness = 0.025,
+							},
+							Text(scope, {
+								Size = UDim2.fromScale(1, 1),
+
+								Text = `Back`,
+								TextScaled = true,
+								Color = theme.Text,
+								Font = Font.fromEnum(Enum.Font.BuilderSansExtraBold),
+
+								Shadow = {
+									Offset = UDim2.fromScale(0, -0.05),
+									Color = theme.Shadow,
+									Ratio = 1,
+								},
+
+								[Children] = scope:New "UIStroke" {
+									ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+									StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
+
+									Color = theme.Shadow,
+									Thickness = 0.025,
+								},
+							}),
+						},
+					}) :: any,
+
+					scope:New "UIStroke" {
+						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+						StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
+						BorderStrokePosition = Enum.BorderStrokePosition.Outer,
+
+						Color = theme.Shadow,
+						Thickness = 0.025,
 					},
 				},
 			}),

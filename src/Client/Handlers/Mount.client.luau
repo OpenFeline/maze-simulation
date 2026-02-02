@@ -66,18 +66,17 @@ scope:New "ScreenGui" {
 
 		scope:Computed(function(use)
 			local state: PlayerState.PlayerState = use(PlayerState.current)
-
 			if state then
 				if state.gameState == "LOBBY" then
-					scope:Menu({})
+					return scope:Menu({})
 				elseif state.gameState == "REPLAYSEL" then
-					scope:Replay({ Player = Player.Name })
+					return scope:Replay({ Player = Player.Name })
 				elseif state.gameState == "INGAME" then
-					scope:HUD({})
+					return scope:HUD({})
 				end
 			end
 
-			return nil
+			return nil :: any
 		end),
 	},
 }
