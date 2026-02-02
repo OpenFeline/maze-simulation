@@ -1,7 +1,9 @@
 --!strict
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterPlayer = game:GetService("StarterPlayer")
 
+local CreateStory = require(StarterPlayer.StarterPlayerScripts.ui.CreateStory)
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
@@ -23,10 +25,7 @@ local STORY_CONTROLS = Shadow.Story.Controls(Texture.Story.Controls({
 }))
 type Controls = typeof(STORY_CONTROLS)
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-	controls = STORY_CONTROLS,
-}, function(props)
+return CreateStory(function(props)
 	local scope = props.scope :: Scope
 	local controls = props.controls :: Controls
 
@@ -123,4 +122,4 @@ return UILabs.CreateFusionStory({
 	}
 
 	return nil
-end)
+end, STORY_CONTROLS)
