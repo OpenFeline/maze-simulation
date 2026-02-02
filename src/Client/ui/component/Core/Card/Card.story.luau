@@ -25,6 +25,7 @@ local STORY_CONTROLS = {
 	Corners = UILabs.Slider(0, 0, 1),
 	Color = Color3.new(1, 1, 1),
 	Transparency = UILabs.Slider(0, 0, 1),
+	Scale = UILabs.Slider(1, -1, 2),
 }
 type Controls = typeof(STORY_CONTROLS) & Shadow.Controls & Texture.Controls
 
@@ -36,6 +37,9 @@ return CreateStory(function(props)
 	local texture = Texture.Story.Properties(scope, controls)
 	local corners = scope:Computed(function(use: any)
 		return UDim.new(use(controls.Corners))
+	end)
+	local scale = scope:Computed(function(use: any)
+		return use(controls.Scale)
 	end)
 
 	scope:New "Frame" {
@@ -67,6 +71,7 @@ return CreateStory(function(props)
 				Shadow = shadow,
 				Texture = texture,
 				Corners = corners,
+				Scale = scale,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -83,6 +88,7 @@ return CreateStory(function(props)
 
 				Texture = texture,
 				Corners = corners,
+				Scale = scale,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -99,6 +105,7 @@ return CreateStory(function(props)
 
 				Shadow = shadow,
 				Corners = corners,
+				Scale = scale,
 
 				[Children] = scope:New "TextLabel" {
 					Size = UDim2.fromScale(1, 1),
@@ -112,6 +119,7 @@ return CreateStory(function(props)
 
 				Color = controls.Color,
 				Transparency = controls.Transparency :: any,
+				Scale = scale,
 
 				Corners = corners,
 
