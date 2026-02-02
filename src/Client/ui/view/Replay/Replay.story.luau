@@ -1,9 +1,7 @@
 local CreateStory = require(script.Parent.Parent.Parent.CreateStory)
 
-local HUDView = require(script.Parent)
+local Replay = require(script.Parent)
 
 return CreateStory(function(props)
-	HUDView(props.scope, {
-		Parent = props.target,
-	})
+	Replay(props.scope, { Parent = props.target })
 end)

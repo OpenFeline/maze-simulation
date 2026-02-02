@@ -1,7 +1,9 @@
 --!strict
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterPlayer = game:GetService("StarterPlayer")
 
+local CreateStory = require(StarterPlayer.StarterPlayerScripts.ui.CreateStory)
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
 local Sift = require(ReplicatedStorage.Packages.Sift)
@@ -93,4 +95,4 @@ return UILabs.CreateFusionStory({
 	}
 
 	return nil
-end)
+end, STORY_CONTROLS)

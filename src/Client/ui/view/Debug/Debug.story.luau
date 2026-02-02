@@ -1,7 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local UILabs = require(ReplicatedStorage.Packages.UILabs)
+local CreateStory = require(script.Parent.Parent.Parent.CreateStory)
 
 local Debug = require(script.Parent)
 
@@ -23,9 +20,7 @@ do
 	}
 end
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-}, function(props)
+return CreateStory(function(props)
 	Debug(props.scope, {
 		Parent = props.target,
 		State = FAKE_DEBUG_STATES,
