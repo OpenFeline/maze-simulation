@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Charm = require(ReplicatedStorage.Packages.Charm)
 
-type Replay = {
+export type Replay = {
 	Algorithms: {
 		maze: string,
 		solver: string,
