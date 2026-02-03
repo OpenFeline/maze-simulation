@@ -35,6 +35,7 @@ return function(scope: Scope, props: Props)
 	end
 
 	local offset: Value<UDim2>
+	local cScale = scope:Value(props.Scale or 1)
 
 	local shadow = props.Shadow
 	if shadow then
@@ -53,6 +54,8 @@ return function(scope: Scope, props: Props)
 		offset = scope:Value(ZERO_UDIM2) :: Value<UDim2>
 	end
 
+	props.Scale = scope:Spring(cScale, 40) :: UsedAs<number>
+
 	local card = Card(scope, props :: Card.Props & Children)
 
 	scope:Observer(ref):onBind(function()
@@ -64,10 +67,12 @@ return function(scope: Scope, props: Props)
 
 		local hover = object.MouseEnter:Connect(function()
 			SoundManager.GetSound("hover1_btn"):Play()
+			cScale:set(1.05)
 		end)
 
 		local hoverEnd = object.MouseLeave:Connect(function()
 			SoundManager.GetSound("hover2_btn"):Play()
+			cScale:set(1)
 		end)
 
 		local began = object.InputBegan:Connect(function(input)
