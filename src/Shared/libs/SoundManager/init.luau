@@ -2,8 +2,14 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local UILabs = require(ReplicatedStorage.Packages.UILabs)
-local Widget = UILabs.Environment.PluginWidget
+local Widget: DockWidgetPluginGui? = nil
+do -- Retrieve the environment for sounds played in UI stories:
+	local module = ReplicatedStorage.Packages:FindFirstChild("UILabs")
+	if module then
+		local UILabs = require(module)
+		Widget = UILabs.Environment.PluginWidget
+	end
+end
 
 export type SoundPath = Folder | Sound | { Sound }
 
