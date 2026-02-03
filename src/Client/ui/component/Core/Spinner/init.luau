@@ -10,8 +10,6 @@ local SPIN_SIZE = 50
 
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local Children = Fusion.Children
-local peek = Fusion.peek
 
 -- Fusion | Types:
 type Fusion = typeof(Fusion)
@@ -50,15 +48,12 @@ return function(scope: Scope, props: Props): Instance
 		Position = props.Position,
 		Size = props.Size,
 
-		Image = "rbxassetid://5107171165",
-
+		Image = "rbxassetid://6675230773",
 		BackgroundTransparency = 1,
 
 		Rotation = scope:Computed(function(use)
 			local time = use(currentTime)
 			return (time * SPIN_DEGREES_PER_SECOND) % 360
 		end),
-
-		[Children] = { props[Children] },
 	} :: Instance
 end
