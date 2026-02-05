@@ -40,8 +40,8 @@ do -- Only populate story-related content if UILabs is found:
 		local UILabs = require(module)
 
 		local SHADOW_CONTROLS = {
-			["Shadow: Offset (X)"] = UILabs.Slider(-2.5, -100, 100),
-			["Shadow: Offset (Y)"] = UILabs.Slider(-2.5, -100, 100),
+			["Shadow: Offset (X)"] = UILabs.Slider(-5, -100, 100),
+			["Shadow: Offset (Y)"] = UILabs.Slider(-5, -100, 100),
 			["Shadow: Ratio"] = UILabs.Slider(0.5, 0, 1),
 			["Shadow: Transparency"] = UILabs.Slider(0, 0, 1),
 		}

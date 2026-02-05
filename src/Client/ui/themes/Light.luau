@@ -9,4 +9,4 @@ local theme: types.Theme = {
 	Shadow = Color3.fromHex("#4e472e"),
 	Text = Color3.new(1, 1, 1),
 }
-return theme
+return table.freeze(theme)

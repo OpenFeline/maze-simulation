@@ -9,8 +9,10 @@ type Fusion = typeof(Fusion)
 type Scope<T = Fusion> = Fusion.Scope<T>
 
 local Component = require(script.Parent)
+local Theme = require(script.Parent.Parent.Parent.Parent.Theme)
 
 local STORY_CONTROLS = {
+	Theme = Theme.Story.Control,
 	Corners = UILabs.Slider(0.15, 0, 1),
 }
 type Controls = typeof(STORY_CONTROLS)
@@ -26,13 +28,15 @@ return UILabs.CreateFusionStory({
 		return UDim.new(use(controls.Corners))
 	end)
 
-	Component(scope, {
-		Parent = props.target,
+	Theme.Story.Apply(scope, controls.Theme, function(scope)
+		Component(scope, {
+			Parent = props.target,
 
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromScale(0.2, 0.2),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromScale(0.2, 0.2),
 
-		Corners = corners,
-	})
+			Corners = corners,
+		})
+	end)
 end)
