@@ -4,19 +4,13 @@
     Replay View
 ]]
 
-local AssetService = game:GetService("AssetService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StarterPlayer = game:GetService("StarterPlayer")
 
 local Hooks = script.Parent.Parent.hooks
 
-local BaseGenerator = require(ReplicatedStorage.maze.Generation.BaseGenerator)
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local MazeConfig = require(ReplicatedStorage.core.MazeConfig)
 local PlayerState = require(ReplicatedStorage.state.atoms.PlayerState)
-local Spinner = require(StarterPlayer.StarterPlayerScripts.ui.component.Core.Spinner)
 local networking = require(ReplicatedStorage.networking)
-local types = require(ReplicatedStorage.maze.types)
 local Children = Fusion.Children
 
 type Fusion = typeof(Fusion)
@@ -30,143 +24,8 @@ local UseAtom = require(Hooks.UseAtom)
 local Component = script.Parent.Parent.component
 local Button = require(Component.Core.Button)
 local Card = require(Component.Core.Card)
+local MazeSimulator2D = require(Component.Core.MazeSimulator2D)
 local Text = require(Component.Core.Text)
-
-local cellPx = MazeConfig.nodeSize
-local imgSize = MazeConfig.mazeSize * cellPx
-local wallColor = Color3.fromRGB(0, 0, 0)
-
-local function GetMazeAlgorithmGen(key: string)
-	local mazeGenerator = ReplicatedStorage.maze.Generation:FindFirstChild(key)
-	return mazeGenerator
-end
-
-local function cellToPixel(x: number, y: number)
-	return Vector2.new((x - 1) * cellPx, (y - 1) * cellPx)
-end
-
-local function DrawMaze(image: EditableImage, mazeGenKey: string, seed: number, render: Fusion.Value<boolean>)
-	render:set(false)
-
-	local generator = GetMazeAlgorithmGen(mazeGenKey)
-	if not generator then return end
-
-	local success, module = pcall(require, generator)
-
-	if not success then return nil end
-
-	local mazeGenerator: BaseGenerator.BaseGenerator<unknown> = module.new()
-
-	mazeGenerator.OnComplete:connect(function()
-		local maze = mazeGenerator:GetMaze()
-
-		for i, _ in maze do
-			for j, n2 in maze do
-				local currentNode: types.Node<unknown> = maze[i][j]
-				local px = cellToPixel(currentNode.x, currentNode.y)
-
-				local x0, y0 = px.X, px.Y
-				local x1, y1 = x0 + cellPx, y0 + cellPx
-
-				if currentNode.open.Up then
-					image:DrawLine(
-						Vector2.new(x0, y0),
-						Vector2.new(x1, y0),
-						wallColor,
-						0,
-						Enum.ImageCombineType.Overwrite
-					)
-				end
-
-				if currentNode.open.Down then
-					image:DrawLine(
-						Vector2.new(x0, y1),
-						Vector2.new(x1, y1),
-						wallColor,
-						0,
-						Enum.ImageCombineType.Overwrite
-					)
-				end
-
-				if currentNode.open.Left then
-					image:DrawLine(
-						Vector2.new(x0, y0),
-						Vector2.new(x0, y1),
-						wallColor,
-						0,
-						Enum.ImageCombineType.Overwrite
-					)
-				end
-
-				if currentNode.open.Right then
-					image:DrawLine(
-						Vector2.new(x1, y0),
-						Vector2.new(x1, y1),
-						wallColor,
-						0,
-						Enum.ImageCombineType.Overwrite
-					)
-				end
-			end
-		end
-
-		render:set(true)
-	end)
-
-	task.spawn(mazeGenerator.Generate, mazeGenerator, seed)
-end
-
-type ReplayDisplayProps = {
-	value: PlayerState.Replay | string,
-}
-
-local function ReplayDisplay(scope: Scope, props: ReplayDisplayProps): any -- Silence type error for now
-	local value = props.value
-
-	if value == "FAKE_REPLAY" or not value then
-		return Spinner(scope, {
-			Size = UDim2.fromOffset(50, 50),
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.fromScale(0.5, 0.5),
-		})
-	end
-
-	local theme = Theme.Contextual:now()
-
-	local render = scope:Value(false)
-
-	local image = AssetService:CreateEditableImage({
-		Size = Vector2.new(imgSize + 1, imgSize + 1),
-	})
-
-	DrawMaze(image, (value :: PlayerState.Replay).algorithms.maze, (value :: PlayerState.Replay).date, render)
-
-	return scope:Computed(function(use)
-		if use(render) then
-			return scope:New "ImageLabel" {
-				Size = UDim2.fromScale(0.95, 0.95),
-				AnchorPoint = Vector2.new(0.5, 0.5),
-				Position = UDim2.fromScale(0.5, 0.5),
-
-				BackgroundColor3 = theme.Secondary,
-
-				ImageContent = Content.fromObject(image),
-
-				[Children] = {
-					scope:New "UICorner" {
-						CornerRadius = UDim.new(0.1),
-					},
-				},
-			}
-		end
-
-		return Spinner(scope, {
-			Size = UDim2.fromOffset(50, 50),
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.fromScale(0.5, 0.5),
-		})
-	end)
-end
 
 type ReplayButtonProps = {
 	value: PlayerState.Replay | string,
@@ -197,7 +56,7 @@ local function ReplayButton(scope: Scope, props: ReplayButtonProps): Instance
 				Color = theme.Shadow,
 				Thickness = 0.025,
 			},
-			ReplayDisplay(scope, props) :: any,
+			--MazeSimulator2D(scope, props) :: any,
 		},
 	})
 end

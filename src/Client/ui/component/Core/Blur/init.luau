@@ -5,7 +5,7 @@ local AssetService = game:GetService("AssetService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- References:
-local QuickBlur = require(script.QuickBlur)
+local Blur = require(ReplicatedStorage.libs.Blur)
 
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
@@ -29,7 +29,7 @@ export type Props = Object & {}
 return function(scope: Scope, props: Props): Instance
 	scope = scope:innerScope()
 	local image = AssetService:CreateEditableImage({ Size = Vector2.new(256, 256) })
-	QuickBlur:Blur(image)
+	Blur(image)
 
 	return scope:New "ImageLabel" {
 		Parent = props.Parent,
