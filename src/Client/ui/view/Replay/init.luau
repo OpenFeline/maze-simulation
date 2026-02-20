@@ -22,7 +22,7 @@ local Theme = require(script.Parent.Parent.Theme)
 local UseAtom = require(Hooks.UseAtom)
 
 local Component = script.Parent.Parent.component
-local Button = require(Component.Core.Button)
+local Button = require(Component.Buttons.Raised)
 local Card = require(Component.Core.Card)
 local MazeSimulator2D = require(Component.Core.MazeSimulator2D)
 local Text = require(Component.Core.Text)
@@ -149,11 +149,6 @@ return function(scope: Scope, props: Props): Instance
 						AnchorPoint = Vector2.new(0.5, 1),
 						Position = UDim2.fromOffset(75, -10),
 						Size = UDim2.new(0, 130, 0.5, 0),
-						Shadow = {
-							Offset = UDim2.fromScale(0, -0.05),
-							Color = theme.Shadow,
-							Ratio = 1,
-						},
 
 						Corners = UDim.new(0.15),
 						Color = theme.Primary,
@@ -163,14 +158,6 @@ return function(scope: Scope, props: Props): Instance
 						end,
 
 						[Children] = {
-							scope:New "UIStroke" {
-								ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-								StrokeSizingMode = Enum.StrokeSizingMode.ScaledSize,
-								BorderStrokePosition = Enum.BorderStrokePosition.Inner,
-
-								Color = theme.Shadow,
-								Thickness = 0.025,
-							},
 							Text(scope, {
 								Size = UDim2.fromScale(1, 1),
 

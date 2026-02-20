@@ -2,29 +2,27 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local UILabs = require(ReplicatedStorage.Packages.UILabs)
 
-local Fusion = require(ReplicatedStorage.Packages.Fusion)
-local Children = Fusion.Children
+local UI = script.Parent.Parent.Parent.Parent
 
-type Fusion = typeof(Fusion)
-type Scope<T = Fusion> = Fusion.Scope<T>
+local Story = require(UI.Story)
+local Theme = require(UI.Theme)
 
 local Component = require(script.Parent)
-local Theme = require(script.Parent.Parent.Parent.Parent.Theme)
 
 local STORY_CONTROLS = {
 	Theme = Theme.Story.Control,
 	Corners = UILabs.Slider(0.15, 0, 1),
+
+	Pressed = false,
+	Hovered = false,
 }
 type Controls = typeof(STORY_CONTROLS)
 
-return UILabs.CreateFusionStory({
-	fusion = Fusion,
-	controls = STORY_CONTROLS,
-}, function(props)
-	local scope = props.scope :: Scope
-	local controls = props.controls :: Controls
+return Story.Build(function(props: Story.Props<Controls>)
+	local scope = props.scope
+	local controls = props.controls
 
-	local corners = scope:Computed(function(use: any, scope: Scope)
+	local corners = scope:Computed(function(use: any, scope: typeof(scope))
 		return UDim.new(use(controls.Corners))
 	end)
 
@@ -37,6 +35,9 @@ return UILabs.CreateFusionStory({
 			Size = UDim2.fromScale(0.2, 0.2),
 
 			Corners = corners,
+
+			Pressed = controls.Pressed,
+			Hovered = controls.Hovered,
 		})
 	end)
-end)
+end, STORY_CONTROLS)

@@ -20,4 +20,8 @@ export type GuiObject = {
 }
 export type Children = { [typeof(Children)]: Child }
 
-return table.freeze {}
+return table.freeze {
+	Properties = {
+		GuiObject = { "Parent", "ZIndex", "LayoutOrder", "AnchorPoint", "Position", "Size" },
+	},
+}

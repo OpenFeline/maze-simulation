@@ -15,6 +15,7 @@ local UserInputService = game:GetService("UserInputService")
 -- Fusion:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
+local peek = Fusion.peek :: any
 
 type UsedAs<T> = Fusion.UsedAs<T>
 
@@ -47,7 +48,7 @@ UserInputService.InputBegan:Connect(function(i, p)
 	if p or not RunService:IsStudio() then return end
 
 	-- Why dis throw a type error... ;-;
-	if i.KeyCode == Enum.KeyCode.F then DEBUG_MODE:set(not Fusion.peek(DEBUG_MODE) :: boolean) end
+	if i.KeyCode == Enum.KeyCode.F then DEBUG_MODE:set(not peek(DEBUG_MODE) :: boolean) end
 end)
 
 scope:New "ScreenGui" {
@@ -67,21 +68,21 @@ scope:New "ScreenGui" {
 				else nil
 		end),
 
-		scope:Computed(function(use: any)
+		scope:Computed(function(use: any): Instance?
 			local state: PlayerState.PlayerState = use(PlayerState.current)
-			if state then
-				if state.gameState == "LOBBY" then
-					return scope:Menu({})
-				elseif state.gameState == "REPLAYSEL" then
-					return scope:Replay({ Player = Player.Name })
-				elseif state.gameState == "INGAME" then
-					return scope:HUD({})
-				elseif state.gameState == "GENERATING" then
-					return scope:Blur({})
-				end
+			if not state then return nil end
+
+			if state.gameState == "LOBBY" then
+				return scope:Menu({})
+			elseif state.gameState == "REPLAYSEL" then
+				return scope:Replay({ Player = Player.Name })
+			elseif state.gameState == "INGAME" then
+				return scope:HUD({})
+			elseif state.gameState == "GENERATING" then
+				return scope:Blur({})
 			end
 
-			return nil :: any
+			return nil
 		end),
 	},
 }

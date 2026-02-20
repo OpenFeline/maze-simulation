@@ -3,11 +3,6 @@
 -- Services:
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
--- Constants:
-local ZERO_UDIM2: UDim2 = UDim2.new()
-local SPRING_SPEED: number = 50
-local HOVER_MULTIPLIER: number = 1.05
-
 -- Fusion | Definitions:
 local Fusion = require(ReplicatedStorage.Packages.Fusion)
 local Children = Fusion.Children
@@ -30,24 +25,11 @@ local Theme = require(Components.Parent.Theme)
 
 local Card = require(Components.Core.Card)
 
--- Note: Idk if I should actually be doing something like this, it feels gross
-local function Privatize<T>(scope: Scope, value: UsedAs<T>): Value<T>
-	local internal: Value<T>
-	if typeof(value) == "table" then
-		internal = scope:Value(peek(value)) :: Value<T>
-		scope:Observer(value):onChange(function()
-			internal:set(peek(value))
-		end)
-	else
-		internal = scope:Value(value)
-	end
-	return internal
-end
-
 export type Props = Card.Props & {
 	-- TODO: Interactable: UsedAs<boolean>?,
 	Activated: ((GuiObject) -> ())?,
 	Hovered: Value<boolean>?,
+	Pressed: Value<boolean>?,
 }
 type Children = { [typeof(Children)]: Child? }
 
@@ -56,8 +38,8 @@ return function(scope: Scope, props: Props)
 	local theme = Theme.Contextual:now()
 
 	local ref = props.__ref
-	local shadow = props.Shadow
-	local hovered: Value<boolean> = props.Hovered or scope:Value(false) :: any
+	local hovered = props.Hovered or scope:Value(false) :: Value<boolean>
+	local pressed = props.Pressed or scope:Value(false) :: Value<boolean>
 
 	-- Ensure reference Value exists:
 	if not ref then
@@ -65,23 +47,9 @@ return function(scope: Scope, props: Props)
 		props.__ref = ref
 	end
 
-	local __offset: UsedAs<UDim2>?, offset: Value<UDim2>? = nil, nil
-	local __scale: UsedAs<number>?, scale: Value<number>? = nil, nil
-
-	if shadow then
-		__offset = shadow.Offset
-		offset = Privatize(scope, __offset :: UDim2)
-		shadow.Offset = scope:Spring(offset :: any, SPRING_SPEED) :: UsedAs<UDim2>
-	else
-		__scale = props.Scale or 1
-		scale = Privatize(scope, __scale :: number)
-		props.Scale = scope:Spring((scale :: any) :: number, SPRING_SPEED)
-	end
-
 	do -- Handle color hover effects:
-		-- TODO: Rename the variables in here to be more descriptive
 		local color = props.Color or theme.Primary
-		local goal = Privatize(scope, color :: Color3)
+		local goal = scope:Value(peek(color))
 
 		scope:Observer(hovered):onChange(function()
 			local hovering = peek(hovered)
@@ -89,11 +57,6 @@ return function(scope: Scope, props: Props)
 			local current = peek(color)
 			local highlight = current:Lerp(peek(theme.Shadow), 0.25)
 			goal:set(if hovering then highlight else current)
-
-			if scale and __scale then
-				local value = peek(__scale)
-				scale:set(if hovering then value * HOVER_MULTIPLIER else value)
-			end
 		end)
 		props.Color = scope:Spring(goal :: any, 50, 2) :: any
 	end
@@ -117,6 +80,7 @@ return function(scope: Scope, props: Props)
 			object.MouseEnter:Connect(function()
 				Interactions.Hovered:set(object)
 				hovered:set(true)
+
 				SoundManager.Play(SoundManager.Get("hover_btn"))
 			end),
 			object.MouseLeave:Connect(function()
@@ -124,15 +88,15 @@ return function(scope: Scope, props: Props)
 				hovered:set(false)
 			end),
 
-			-- TODO: Implement rescaling on pressed:
 			object.InputBegan:Connect(function(input)
 				if not Interactions.Activated(input) then return end
-				if __offset and offset then offset:set(ZERO_UDIM2) end
+				pressed:set(true)
 			end),
 			object.InputEnded:Connect(function(input)
 				if not Interactions.Activated(input) then return end
-				if __offset and offset then offset:set(peek(__offset)) end
 				if props.Activated then props.Activated(object) end
+				pressed:set(false)
+
 				SoundManager.Play(SoundManager.Get("click_btn"))
 			end),
 		})
